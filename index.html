@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="">
+
+</head>
+
+<body>
+
+  <h1>Giphy Giphy Site</h1>
+
+  <div id="buttons-dump-here">
+
+  </div>
+
+  <form action="">
+    <label for="animal-input-text">Add any animal you want!</label>
+    <input type="text" name="input" id="input">
+    <br>
+    <input type="submit" name="" id="add-animal">
+  </form>
+  <div id="gifs-appear-here">
+
+  </div>
+
+
+
+
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous">
+    </script>
+
+
+
+  <script type="text/javascript">
+    // initial array of animals
+    var animalsArray = ["Honey Badger", "Eagle", "Fox", "Tiger"];
+
+    // creating a function to render buttons
+    function renderButtons() {
+      $("#buttons-dump-here").empty();
+      //looping through the array
+      for (var i = 0; i < animalsArray.length; i++) {
+        var button = $("<button>");
+        button.addClass("animal");
+        button.attr("data-name", animalsArray[i]);
+        //giving the button text with the value of the movie at index i
+        button.text(animalsArray[i]);
+        //addin the button to the html
+        $("#buttons-dump-here").append(button);
+      }
+
+    }
+    // this will handle when you want to add a new button and push it to the array of movies
+    $("#add-animal").on("click", function (event) {
+      event.preventDefault();
+      var animalInput = $("#input").val().trim();
+      animalsArray.push(animalInput);
+      renderButtons();
+
+    });
+
+
+    //make a function when the button is clicked it will make a ajx call and pull the images and display them
+    $(document).on("click", "button", function () {
+      console.log("clicked");
+      // Grabbing and storing the data property value from the button
+      var animalButton = $(this).attr("data-name")
+
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        animalButton + "&api_key=BkaUZZWcFij6J7AoQj3WtPb1R2p9O6V9&limit=10";
+
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        .then(function (response) {
+          console.log(queryURL);
+          console.log(response.data);
+          var results = response.data;
+          for (var i = 0; i < results.length; i++) {
+            var animalDiv = $("<div>");
+            var p = $("<p>").text("Rating: " + results[i].rating);
+            var animalImage = $("<img>");
+            animalImage.attr("src", results[i].images.fixed_height.url);
+            animalDiv.append(p);
+            animalDiv.append(animalImage);
+            $("#gifs-appear-here").prepend(animalDiv);
+          }
+        })
+    });
+
+
+
+
+
+
+    renderButtons();
+
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
